@@ -111,7 +111,7 @@ class AutoGive():
     '''
 
     def post(self, user, pwd, cnt, money, post_num):
-        ptt = PTT.Library(kickOtherLogin=False, _LogLevel=PTT.LogLevel.SLIENT)
+        ptt = PTT.Library(kickOtherLogin=False, _LogLevel=PTT.LogLevel.SLIENT)#, _LogLevel=PTT.LogLevel.SLIENT
         ptt.login(user, pwd)
         ErrCode, Post = ptt.getPost(self.ptt_board[1], PostIndex=post_num)
         content_data = []
@@ -180,15 +180,21 @@ class AutoGive():
                         i = '\x15[1;37m' + pushtype + ' \x15[33m' + pushid + '\x15[m\x15[33m:' + pushtext_t[:
                                                                                                             -1] + '\x15[m' + pushtime
             elif '作者' in i:
-                tmplate = []
-                for c in i.split(')'):
-                    tmplate.append(c)
-                postauthor = tmplate[0][1:]
-                cb = postauthor.replace(' ', ':', 1)
-                postboard = tmplate[1].lstrip()
-                pb = postboard.replace(' ', ':', 1)
-                tmp = cb + ') ' + pb
-                i = tmp
+                try:
+                    tmplate = []
+                    for c in i.split(')'):
+                        tmplate.append(c)
+                    postauthor = tmplate[0][1:]
+                    cb = postauthor.replace(' ', ':', 1)
+                    postboard = tmplate[1].lstrip()
+                    pb = postboard.replace(' ', ':', 1)
+                    tmp = cb + ') ' + pb
+                    i = tmp
+                except:
+                    ptt.logout()
+                    text_update('編輯文章出現錯誤！！\n')
+                    text_update('--------------------\n')
+
             elif '標題' in i:
                 post_title = i[1:]
                 tmp = post_title.replace(' ', ':', 1)
@@ -292,7 +298,7 @@ if __name__ == "__main__":
 
     # 彈出下載完成
     def finish_download():
-        messagebox.showerror(title='Finish!!!!', message='下載完成！！！！！！！')
+        messagebox.showerror(title='Finish!!!!', message='完成發錢')
 
     # 金額
     tk.Label(windows, text='金額: ').place(x=10, y=260)
